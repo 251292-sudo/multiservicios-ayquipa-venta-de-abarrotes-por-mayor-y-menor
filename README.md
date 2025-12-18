@@ -1,0 +1,302 @@
+client'; // Necesario para Next.js / Vercel cuando se usan hooks como useState
+
+/**
+ * INSTRUCCIONES PARA GITHUB / VERCEL:
+ * * Dependencias necesarias para este componente:
+ * 1. lucide-react (Iconos) -> npm install lucide-react
+ * 2. Tailwind CSS (Estilos) -> Asegúrate de tener Tailwind configurado en tu proyecto.
+ * * Si usas Next.js (App Router), este archivo funciona tal cual gracias a 'use client'.
+ * Si usas Vite/Create React App, simplemente importa este componente en tu App.js.
+ */
+
+import React, { useState } from 'react';
+import { Search, ShoppingCart, Phone, MapPin, Facebook, Menu, X, Filter, Tag, Package, Star } from 'lucide-react';
+
+// Datos de ejemplo (Simulación de base de datos)
+const productsData = [
+  { id: 1, name: "Arroz Superior (Saco)", category: "Abarrotes", priceRetail: 4.80, priceWholesale: 220.00, wholesaleUnit: "Saco 50kg", image: "🍚", popular: true },
+  { id: 2, name: "Azúcar Rubia", category: "Abarrotes", priceRetail: 3.50, priceWholesale: 165.00, wholesaleUnit: "Saco 50kg", image: "🌾", popular: true },
+  { id: 3, name: "Aceite Vegetal 1L", category: "Aceites", priceRetail: 8.50, priceWholesale: 98.00, wholesaleUnit: "Caja 12u", image: "🌻", popular: false },
+  { id: 4, name: "Leche Evaporada (Lata)", category: "Lácteos", priceRetail: 4.20, priceWholesale: 195.00, wholesaleUnit: "Caja 48u", image: "🥛", popular: true },
+  { id: 5, name: "Fideos Spaghetti", category: "Pastas", priceRetail: 2.50, priceWholesale: 48.00, wholesaleUnit: "Paquete 20u", image: "🍝", popular: false },
+  { id: 6, name: "Atún en Trozos", category: "Conservas", priceRetail: 5.50, priceWholesale: 250.00, wholesaleUnit: "Caja 48u", image: "🐟", popular: false },
+  { id: 7, name: "Gaseosa 3L", category: "Bebidas", priceRetail: 11.00, priceWholesale: 60.00, wholesaleUnit: "Paquete 6u", image: "🥤", popular: true },
+  { id: 8, name: "Detergente Floral 1kg", category: "Limpieza", priceRetail: 9.00, priceWholesale: 170.00, wholesaleUnit: "Saco 20kg", image: "🧼", popular: false },
+  { id: 9, name: "Jabón de Tocador", category: "Limpieza", priceRetail: 2.50, priceWholesale: 140.00, wholesaleUnit: "Caja 72u", image: "🛁", popular: false },
+  { id: 10, name: "Papel Higiénico (Plan)", category: "Limpieza", priceRetail: 18.00, priceWholesale: 17.50, wholesaleUnit: "A partir de 10", image: "🧻", popular: true },
+  { id: 11, name: "Galletas Soda", category: "Galletas", priceRetail: 3.00, priceWholesale: 28.00, wholesaleUnit: "Paquete 10u", image: "🍪", popular: false },
+  { id: 12, name: "Chocolate Taza", category: "Abarrotes", priceRetail: 1.50, priceWholesale: 140.00, wholesaleUnit: "Caja 100u", image: "🍫", popular: false },
+];
+
+const categories = ["Todos", "Abarrotes", "Aceites", "Lácteos", "Pastas", "Conservas", "Bebidas", "Limpieza", "Galletas"];
+
+export default function App() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  // Lógica de filtrado
+  const filteredProducts = productsData.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "Todos" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const handleAddToCart = () => {
+    setCartCount(prev => prev + 1);
+    // Aquí podrías añadir lógica real de carrito
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800">
+      
+      {/* --- HEADER --- */}
+      <header className="sticky top-0 z-50 bg-blue-700 text-white shadow-lg">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          
+          {/* Logo y Nombre */}
+          <div className="flex items-center gap-2">
+            <div className="bg-orange-500 p-2 rounded-lg shadow-md">
+              <Package size={24} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg md:text-2xl font-bold leading-tight">Multiservicios Ayquipa</h1>
+              <p className="text-xs text-blue-200 hidden md:block">Venta de abarrotes por mayor y menor</p>
+            </div>
+          </div>
+
+          {/* Buscador Desktop */}
+          <div className="hidden md:flex flex-1 max-w-lg mx-8 relative">
+            <input
+              type="text"
+              placeholder="Buscar productos (ej. Arroz, Leche)..."
+              className="w-full py-2 pl-10 pr-4 rounded-full text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Search className="absolute left-3 top-2.5 text-slate-400" size={18} />
+          </div>
+
+          {/* Acciones */}
+          <div className="flex items-center gap-4">
+            <button className="relative p-2 hover:bg-blue-600 rounded-full transition" onClick={handleAddToCart}>
+              <ShoppingCart size={24} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+            <button 
+              className="md:hidden p-2 hover:bg-blue-600 rounded-lg"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Buscador Mobile */}
+        <div className={`md:hidden px-4 pb-4 ${mobileMenuOpen ? 'block' : 'hidden'}`}>
+           <div className="relative">
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              className="w-full py-2 pl-10 pr-4 rounded-lg text-slate-800 focus:outline-none"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Search className="absolute left-3 top-2.5 text-slate-400" size={18} />
+          </div>
+        </div>
+      </header>
+
+      {/* --- HERO SECTION --- */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 md:py-12 px-4 shadow-md">
+        <div className="container mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Los precios más bajos</h2>
+          <p className="text-lg md:text-xl text-blue-100 mb-6">Abastece tu negocio o tu hogar con nosotros. Calidad y garantía.</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+              <Tag className="text-orange-400" size={20} />
+              <span>Venta x Menor</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+              <Package className="text-orange-400" size={20} />
+              <span>Venta x Mayor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
+        
+        {/* --- SIDEBAR FILTERS (Desktop) --- */}
+        <aside className="hidden md:block w-64 flex-shrink-0">
+          <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 sticky top-24">
+            <div className="flex items-center gap-2 mb-4 text-blue-800">
+              <Filter size={20} />
+              <h3 className="font-bold text-lg">Categorías</h3>
+            </div>
+            <ul className="space-y-2">
+              {categories.map(cat => (
+                <li key={cat}>
+                  <button
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                      selectedCategory === cat 
+                        ? 'bg-orange-100 text-orange-700 font-semibold' 
+                        : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        {/* --- FILTERS (Mobile Scroll) --- */}
+        <div className="md:hidden overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+          <div className="flex gap-2">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedCategory === cat 
+                    ? 'bg-orange-500 text-white shadow-md' 
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* --- PRODUCT GRID --- */}
+        <div className="flex-1">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-slate-800">
+              {selectedCategory === "Todos" ? "Todos los Productos" : selectedCategory}
+              <span className="ml-2 text-sm font-normal text-slate-500">({filteredProducts.length} productos)</span>
+            </h2>
+          </div>
+
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-xl border border-dashed border-slate-300">
+              <Search className="mx-auto h-12 w-12 text-slate-300 mb-3" />
+              <p className="text-slate-500 text-lg">No encontramos productos con ese nombre.</p>
+              <button 
+                onClick={() => {setSearchTerm(""); setSelectedCategory("Todos")}}
+                className="mt-4 text-blue-600 font-medium hover:underline"
+              >
+                Ver todo el catálogo
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((product) => (
+                <div key={product.id} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-slate-100 overflow-hidden group">
+                  
+                  {/* Imagen Simulada */}
+                  <div className="h-40 bg-slate-50 flex items-center justify-center relative group-hover:bg-blue-50 transition-colors">
+                    <span className="text-6xl drop-shadow-sm transform group-hover:scale-110 transition-transform duration-300">{product.image}</span>
+                    {product.popular && (
+                      <span className="absolute top-3 right-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                        <Star size={12} fill="currentColor" /> Top
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Info Producto */}
+                  <div className="p-4">
+                    <div className="text-xs font-semibold text-blue-600 mb-1 uppercase tracking-wide">{product.category}</div>
+                    <h3 className="font-bold text-slate-800 text-lg mb-3 leading-snug">{product.name}</h3>
+                    
+                    <div className="space-y-3">
+                      {/* Precio Minorista */}
+                      <div className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        <span className="text-sm text-slate-500">Unidad</span>
+                        <span className="text-lg font-bold text-slate-800">S/ {product.priceRetail.toFixed(2)}</span>
+                      </div>
+
+                      {/* Precio Mayorista (Destacado) */}
+                      <div className="flex flex-col bg-orange-50 p-2 rounded-lg border border-orange-100">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-bold text-orange-700 flex items-center gap-1">
+                            <Package size={12} /> AL POR MAYOR
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-xs text-orange-600">{product.wholesaleUnit}</span>
+                          <span className="text-xl font-extrabold text-orange-600">S/ {product.priceWholesale.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={handleAddToCart}
+                      className="w-full mt-4 bg-blue-700 text-white py-2 rounded-lg font-medium hover:bg-blue-800 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    >
+                      <ShoppingCart size={18} />
+                      Agregar al Pedido
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+
+      {/* --- FOOTER --- */}
+      <footer className="bg-slate-900 text-slate-300 py-10 mt-12">
+        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+          
+          <div>
+            <h3 className="text-white text-xl font-bold mb-4 flex items-center justify-center md:justify-start gap-2">
+              <Package className="text-orange-500" /> Multiservicios Ayquipa
+            </h3>
+            <p className="text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
+              Tu socio confiable en abarrotes. Ofrecemos calidad y buenos precios para tu hogar o tu negocio.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-4">Contacto</h4>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-center justify-center md:justify-start gap-2">
+                <MapPin size={16} className="text-orange-500" />
+                <span>Av. Principal 123, Mercado Central</span>
+              </li>
+              <li className="flex items-center justify-center md:justify-start gap-2">
+                <Phone size={16} className="text-orange-500" />
+                <span>+51 987 654 321</span>
+              </li>
+              <li className="flex items-center justify-center md:justify-start gap-2">
+                <Facebook size={16} className="text-orange-500" />
+                <span>/MultiserviciosAyquipa</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white font-bold mb-4">Horario de Atención</h4>
+            <ul className="space-y-1 text-sm">
+              <li>Lunes - Sábado: 6:00 AM - 8:00 PM</li>
+              <li>Domingos: 7:00 AM - 2:00 PM</li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-slate-800 mt-8 pt-6 text-center text-xs text-slate-500">
+          © {new Date().getFullYear()} Multiservicios Ayquipa. Todos los derechos reservados.
+        </div>
+      </footer>
+
+    </div>
+  );
+}

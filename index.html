@@ -1,3 +1,14 @@
+'use client'; // Necesario para Next.js / Vercel cuando se usan hooks como useState
+
+/**
+ * INSTRUCCIONES PARA GITHUB / VERCEL:
+ * * Dependencias necesarias para este componente:
+ * 1. lucide-react (Iconos) -> npm install lucide-react
+ * 2. Tailwind CSS (Estilos) -> Asegúrate de tener Tailwind configurado en tu proyecto.
+ * * Si usas Next.js (App Router), este archivo funciona tal cual gracias a 'use client'.
+ * Si usas Vite/Create React App, simplemente importa este componente en tu App.js.
+ */
+
 import React, { useState } from 'react';
 import { Search, ShoppingCart, Phone, MapPin, Facebook, Menu, X, Filter, Tag, Package, Star } from 'lucide-react';
 
@@ -104,7 +115,7 @@ export default function App() {
       {/* --- HERO SECTION --- */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 md:py-12 px-4 shadow-md">
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Los mejores precios del mercado</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Los precios más bajos</h2>
           <p className="text-lg md:text-xl text-blue-100 mb-6">Abastece tu negocio o tu hogar con nosotros. Calidad y garantía.</p>
           <div className="flex flex-wrap justify-center gap-4">
             <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
